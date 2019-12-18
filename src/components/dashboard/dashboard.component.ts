@@ -13,10 +13,14 @@ export class DashboardComponent implements OnInit {
   constructor(private db: AngularFirestore) { }
 
   ngOnInit() {
-    this.db.firestore.collection('heroes').limit(4).get().then((querry)=>{
+    this.getHeroesLimited();
+  }
+
+  getHeroesLimited(): void {
+    this.db.firestore.collection('heroes').limit(4).get().then((querry) => {
       querry.forEach((doc) => {
         let current = doc.data();
-        this.heroes.push({id: current.id, name: current.name});
+        this.heroes.push({ id: current.id, name: current.name });
       })
     })
   }
