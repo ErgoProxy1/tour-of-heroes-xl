@@ -1,0 +1,13 @@
+<h2>My Heroes</h2>
+<input [(ngModel)]='heroToSave'>
+<button (click)="saveHero()">save</button>
+<img src="https://media2.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif" *ngIf="loading" height="10%" width="10%">
+<ul class="heroes">
+    <li *ngFor="let hero of heroes">
+        <a routerLink="/detail/{{hero.id}}" (contextmenu)="deleteHero(hero, $event)">
+            <div height='100%' width='100%'>
+                <span class="badge">{{hero.id}}</span> {{hero.name}}
+            </div>
+        </a>
+    </li>
+</ul>
