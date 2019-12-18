@@ -23,6 +23,7 @@ export class HeroDetailsComponent implements OnInit {
 
   ngOnInit() {
     const id = +this.route.snapshot.paramMap.get('id');
+    console.log(id);
     this.db.firestore.collection("heroes").where("id", "==", id).get().then((doc) => {
       this.hero = ({id: doc.docs[0].data().id, name: doc.docs[0].data().name} as Hero);
     })

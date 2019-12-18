@@ -9,7 +9,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { AngularFireModule } from 'angularfire2'
 import { environment } from './environments/environment';
-import { AngularFirestoreModule} from '@angular/fire/firestore'
+import { AngularFirestoreModule} from '@angular/fire/firestore';
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,7 @@ import { AngularFirestoreModule} from '@angular/fire/firestore'
     AngularFireModule.initializeApp(environment.config, 'testdb'),
     AngularFirestoreModule
   ],
-  providers: [],
+  providers: [{provide: LocationStrategy, useClass: HashLocationStrategy}],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
