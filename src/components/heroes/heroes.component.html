@@ -3,6 +3,7 @@
 <button (click)="saveHero()">save</button>
 <img src="https://media2.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif" *ngIf="loading" height="10%" width="10%">
 <ul class="heroes">
+    <p *ngIf="heroes.length == 0">No Heroes Present!</p>
     <li *ngFor="let hero of heroes">
         <a routerLink="/detail/{{hero.id}}" (contextmenu)="deleteHero(hero, $event)">
             <div height='100%' width='100%'>

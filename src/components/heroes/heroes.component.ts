@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Hero } from './hero';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { MessageService } from 'src/services/message.service';
+import { AuthentificationService } from 'src/services/authentification.service';
 
 @Component({
   selector: 'app-heroes',
@@ -16,24 +17,29 @@ export class HeroesComponent implements OnInit {
   heroes: Hero[] = [];
   loading = false;
 
-  constructor(private db: AngularFirestore, private messageService: MessageService) {
-  
+  constructor(
+    private db: AngularFirestore,
+    private messageService: MessageService,
+    private authService: AuthentificationService) {
+
   }
 
   ngOnInit() {
-    this.db.firestore.collection("heroes").onSnapshot(()=>{
-     this.getHeroes();
-    })
+    this.db.firestore.collection("heroes").onSnapshot(() => {
+      this.getHeroes();
+    });
   }
 
   getHeroes(): void {
-    this.db.collection('heroes').get().subscribe((querry) => {
-      this.heroes.length = 0;
-      querry.forEach((doc) => {
-        let current = doc.data();
-        this.heroes.push({ id: current.id, name: current.name });
+    if (this.authService.fbAuth.auth.currentUser) {
+      this.db.firestore.collection('heroes').where("userId", "==", this.authService.fbAuth.auth.currentUser.uid).get().then((querry) => {
+        this.heroes.length = 0;
+        querry.forEach((doc) => {
+          let current = doc.data();
+          this.heroes.push({ id: current.id, name: current.name });
+        })
       })
-    })
+    }
   }
 
   saveHero(): void {
@@ -41,6 +47,7 @@ export class HeroesComponent implements OnInit {
     this.db.firestore.collection('heroes').doc(this.db.createId()).set({
       id: this.heroes.length + 1,
       name: this.heroToSave.trim(),
+      userId: this.authService.fbAuth.auth.currentUser.uid,
     })
     this.getHeroes();
     this.loading = false;

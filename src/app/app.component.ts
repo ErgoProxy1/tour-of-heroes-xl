@@ -19,6 +19,7 @@ export class AppComponent implements OnInit {
   userMessage = "";
 
   loggedIn = false;
+  doneLoading = false;
 
   @ViewChild('loginModal', { static: true }) loginModal: ElementRef;
   @ViewChild('signUpModal', { static: true }) signUpModal: ElementRef;
@@ -48,41 +49,20 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.authService.fbAuth.auth.onAuthStateChanged((authData) => {
-      if (authData) {
-        this.errorMessage = "";
-        this.successMessage = "Login Successfull";
-        this.userMessage = `Welcome, ${authData.email}, to the `;
-        this.loggedIn = true;
-      } else {
-        this.errorMessage = "";
-        this.successMessage = "";
-        this.userMessage = "";
-        this.loggedIn = false;
-      }
-    })
+    this.doneLoading = true;
   }
 
   openLogin() {
     this.loginForm.reset();
-    this.errorMessage = "";
-    this.successMessage = "";
-    this.userMessage = "";
     this.modalService.open(this.loginModal, this.modalConfig);
   }
 
   openSignUp() {
     this.registerForm.reset();
-    this.errorMessage = "";
-    this.successMessage = "";
-    this.userMessage = "";
     this.modalService.open(this.signUpModal, this.modalConfig);
   }
 
   openLogout() {
-    this.errorMessage = "";
-    this.successMessage = "";
-    this.userMessage = "";
     this.modalService.open(this.logoutModal, this.modalConfig);
   }
 
@@ -97,6 +77,7 @@ export class AppComponent implements OnInit {
         this.errorMessage = "";
         this.successMessage = "Your account has been created";
         this.closeModals();
+
       }, err => {
         console.log(err);
         this.errorMessage = err.message;
@@ -111,6 +92,7 @@ export class AppComponent implements OnInit {
       this.successMessage = "Login Successfull";
       this.userMessage = `Welcome, ${res.user.email}, to the `
       this.closeModals();
+
     }, err => {
       this.errorMessage = err.message;
       this.successMessage = "";
@@ -124,6 +106,7 @@ export class AppComponent implements OnInit {
       this.userMessage = "";
       this.loggedIn = false;
       this.closeModals();
+
     });
   }
 }
