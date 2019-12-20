@@ -12,17 +12,17 @@ export class AuthentificationService {
     
   }
 
-  doRegister(form: FormGroup){
+  doRegister(email: string, password: string){
     return new Promise<firebase.auth.UserCredential>((resolve, reject) => {
-      this.fbAuth.auth.createUserWithEmailAndPassword(form.value.email, form.value.password).then(res => {
+      this.fbAuth.auth.createUserWithEmailAndPassword(email, password).then(res => {
         resolve(res);
       }, err => reject(err))
     })
   }
 
-  doLogin(form: FormGroup){
+  doLogin(email: string, password: string){
     return new Promise<firebase.auth.UserCredential>((resolve, reject) => {
-      this.fbAuth.auth.signInWithEmailAndPassword(form.value.email, form.value.password).then(res => {
+      this.fbAuth.auth.signInWithEmailAndPassword(email, password).then(res => {
         resolve(res);
       }, err => reject(err));
     })

@@ -18,7 +18,6 @@ export class DashboardComponent implements OnInit {
   }
 
   getHeroesLimited(): void {
-    console.log("first")
     if (this.authService.fbAuth.auth.currentUser) {
       this.db.firestore.collection('heroes').limit(4).where("userId", "==", this.authService.fbAuth.auth.currentUser.uid)
         .get().then((querry) => {

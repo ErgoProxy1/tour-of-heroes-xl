@@ -2,6 +2,7 @@ import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { AuthentificationService } from 'src/services/authentification.service';
 import { NgbModalConfig, NgbModalOptions, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { resolve } from 'url';
 
 @Component({
   selector: 'app-root',
@@ -45,11 +46,30 @@ export class AppComponent implements OnInit {
     this.loginForm = this.formBuilder.group({
       email: new FormControl('', [Validators.required, Validators.email, Validators.maxLength(75)]),
       password: new FormControl('', [Validators.required, Validators.minLength(5), Validators.maxLength(32)])
-    })
+    });
+
+    this.checkLogin().then((message)=>{
+      this.userMessage = message;
+    });
   }
 
   ngOnInit() {
     this.doneLoading = true;
+  }
+
+  checkLogin(): Promise<string>{
+    return new Promise<string>((resolve, reject) => {
+      this.authService.fbAuth.auth.onAuthStateChanged((user)=>{
+        if(user){
+          this.loggedIn = true;
+          resolve(`Welcome, ${user.email}, to the `);
+        }
+        else{
+          this.loggedIn = false;
+          reject('No logged in user');
+        }
+      })
+    })
   }
 
   openLogin() {
@@ -71,7 +91,7 @@ export class AppComponent implements OnInit {
   }
 
   tryRegister(form: FormGroup) {
-    this.authService.doRegister(form)
+    this.authService.doRegister(form.value.email, form.value.password)
       .then(res => {
         console.log(res);
         this.errorMessage = "";
@@ -86,13 +106,12 @@ export class AppComponent implements OnInit {
   }
 
   tryLogin(form: FormGroup) {
-    this.authService.doLogin(form).then(res => {
+    this.authService.doLogin(form.value.email, form.value.password).then(res => {
       console.log(res);
       this.errorMessage = "";
       this.successMessage = "Login Successfull";
       this.userMessage = `Welcome, ${res.user.email}, to the `
       this.closeModals();
-
     }, err => {
       this.errorMessage = err.message;
       this.successMessage = "";
@@ -106,7 +125,6 @@ export class AppComponent implements OnInit {
       this.userMessage = "";
       this.loggedIn = false;
       this.closeModals();
-
     });
   }
 }
