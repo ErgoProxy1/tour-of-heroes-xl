@@ -45,6 +45,7 @@ export class HeroDetailsComponent implements OnInit {
     .where("id", "==", this.hero.id)
     .where("userId", "==", this.authService.fbAuth.auth.currentUser.uid)
     .get().then((res) => {
+      console.log(this.authService.fbAuth.auth.currentUser.uid)
       this.db.firestore.collection("heroes").doc(res.docs[0].id).update({
         id: this.hero.id,
         name: this.hero.name.trim(),
