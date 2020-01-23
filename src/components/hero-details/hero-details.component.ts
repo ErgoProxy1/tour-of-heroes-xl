@@ -41,7 +41,10 @@ export class HeroDetailsComponent implements OnInit {
   }
 
   save(): void {
-    this.db.firestore.collection("heroes").where("id", "==", this.hero.id).get().then((res) => {
+    this.db.firestore.collection("heroes")
+    .where("id", "==", this.hero.id)
+    .where("userId", "==", this.authService.fbAuth.auth.currentUser.uid)
+    .get().then((res) => {
       this.db.firestore.collection("heroes").doc(res.docs[0].id).update({
         id: this.hero.id,
         name: this.hero.name.trim(),
